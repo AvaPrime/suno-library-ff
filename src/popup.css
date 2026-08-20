@@ -1,0 +1,108 @@
+:root {
+  color-scheme: dark;
+  font: 13px/1.4 system-ui, sans-serif;
+  --bg: #121214;
+  --fg: #e8e6e3;
+  --muted: #9a958c;
+  --line: #2a2a2e;
+  --accent: #c9a227;
+  --err: #e25c4a;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  width: 320px;
+}
+
+header,
+section,
+.hint,
+#recent {
+  padding: 10px 12px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.sub,
+.hint,
+dt {
+  color: var(--muted);
+}
+
+.sub {
+  margin: 2px 0 0;
+}
+
+dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+dl > div {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+  border-top: 1px solid var(--line);
+}
+
+.actions.export {
+  border-bottom: 1px solid var(--line);
+}
+
+.check {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--muted);
+}
+
+button,
+select {
+  background: #1c1c20;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+button#start {
+  border-color: var(--accent);
+}
+
+.error {
+  color: var(--err);
+  margin: 8px 0 0;
+}
+
+#recent {
+  max-height: 220px;
+  overflow: auto;
+  margin: 0;
+  list-style: none;
+}
+
+#recent li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+#recent li span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Suno Library FF</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Suno Library FF</h1>
+      <p class="sub">Local index · v0.4.0</p>
+    </header>
+
+    <section id="status">
+      <dl>
+        <div><dt>Auth</dt><dd id="auth">—</dd></div>
+        <div><dt>Clips</dt><dd id="clips">—</dd></div>
+        <div><dt>Sync</dt><dd id="sync">—</dd></div>
+        <div><dt>Last</dt><dd id="last">—</dd></div>
+      </dl>
+      <p id="error" class="error" hidden></p>
+    </section>
+
+    <section class="actions">
+      <label>
+        Speed
+        <select id="speed">
+          <option value="slow">Slow</option>
+          <option value="balanced" selected>Balanced</option>
+          <option value="fast">Fast</option>
+        </select>
+      </label>
+      <button id="start" type="button">Index library</button>
+      <button id="stop" type="button">Stop</button>
+    </section>
+
+    <section class="actions export">
+      <label>
+        Scope
+        <select id="scope">
+          <option value="recent">Recent 12</option>
+          <option value="all">Entire index</option>
+        </select>
+      </label>
+      <label class="check"><input id="include-image" type="checkbox" /> Art</label>
+      <label class="check"><input id="include-raw" type="checkbox" /> Raw</label>
+      <button id="export" type="button">Export sidecars</button>
+      <button id="stop-export" type="button">Stop export</button>
+    </section>
+
+    <p id="export-status" class="hint">Export idle.</p>
+
+    <p class="hint">
+      Open <a href="https://suno.com" target="_blank" rel="noreferrer">suno.com</a>
+      logged in so the content script can capture a short-lived Bearer.
+    </p>
+
+    <ul id="recent"></ul>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
