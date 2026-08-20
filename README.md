@@ -11,6 +11,7 @@ MUSE companion: this is a **Suno adapter**, not the workbench. See [ARCHITECTURE
 |---|---|
 | [n3x7-muse](https://github.com/AvaPrime/n3x7-muse) | Provider-agnostic music intelligence workbench |
 | [codessa-musiclab](https://github.com/AvaPrime/codessa-musiclab) | Local audio engine / pipeline |
+| [grid](https://github.com/AvaPrime/grid) | DJ crate OS — sidecar batches are ingest input, not GRID crates |
 
 ## Scope
 
@@ -78,6 +79,7 @@ Entire-index export will open one download per file. Use Slow on large libraries
 1. Confirm live `feed/v3` request body against a captured HAR.
 2. Derive lineage edges from `parent_id` on insert.
 3. Add FTS (SQLite WASM) once clip volume exceeds IDB scan comfort.
+4. Lineage edges on insert; confirm `feed/v3` body against a live HAR.
 
 ## Schema
 

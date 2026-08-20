@@ -14,6 +14,7 @@
   ],
   "related": {
     "workbench": "https://github.com/AvaPrime/n3x7-muse",
-    "audio-engine": "https://github.com/AvaPrime/codessa-musiclab"
+    "audio-engine": "https://github.com/AvaPrime/codessa-musiclab",
+    "dj-library-os": "https://github.com/AvaPrime/grid"
   }
 }

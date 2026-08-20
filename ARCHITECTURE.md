@@ -8,9 +8,12 @@ This repository is a **Suno provider adapter**, not the music intelligence workb
 |---|---|
 | [AvaPrime/n3x7-muse](https://github.com/AvaPrime/n3x7-muse) | MUSE workbench. Canonical understanding, taste, curation, sonic engineering. Provider APIs are adapters. |
 | [AvaPrime/codessa-musiclab](https://github.com/AvaPrime/codessa-musiclab) | Local audio pipeline (prompt → MIDI / stems / reflection). |
+| [AvaPrime/grid](https://github.com/AvaPrime/grid) | DJ library OS (crates, cues, Camelot). Sidecar batches are an ingest candidate, not a crate format. |
 | **AvaPrime/suno-library-ff** | Firefox-local index of *your* Suno library. Read path only. |
 
 Do not merge this into `n3x7-muse`. That repo is provider-agnostic by invariant. A vendor feed walker would contaminate the workbench boundary.
+
+Do not merge this into `grid`. GRID owns playback crates. This adapter owns Suno session read + local index + sidecar dump.
 
 ## Contract
 
