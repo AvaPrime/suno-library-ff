@@ -1,0 +1,19 @@
+{
+  "name": "Suno Library FF",
+  "version": "0.4.0",
+  "status": "adapter-scaffold",
+  "system": "MUSE",
+  "artist": "N3X7",
+  "role": "suno-provider-adapter",
+  "principles": [
+    "provider-agnostic-canonical-data",
+    "suno-is-not-source-of-truth",
+    "ephemeral-auth",
+    "sovereign-local-index",
+    "no-generation-in-this-surface"
+  ],
+  "related": {
+    "workbench": "https://github.com/AvaPrime/n3x7-muse",
+    "audio-engine": "https://github.com/AvaPrime/codessa-musiclab"
+  }
+}

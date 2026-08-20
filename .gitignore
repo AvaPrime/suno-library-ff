@@ -1,0 +1,8 @@
+.DS_Store
+*.xpi
+*.zip
+web-ext-artifacts/
+node_modules/
+.idea/
+.vscode/
+*.log

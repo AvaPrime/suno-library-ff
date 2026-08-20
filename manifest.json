@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Suno Library FF",
+  "version": "0.4.0",
+  "description": "Local indexer for your Suno library. Independent WebExtension; not affiliated with Suno or Suno Explorer.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "suno-library-ff@local",
+      "strict_min_version": "128.0"
+    }
+  },
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "cookies",
+    "downloads",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://suno.com/*",
+    "https://*.suno.com/*",
+    "https://studio-api.prod.suno.com/*",
+    "https://studio-api-prod.suno.com/*",
+    "https://*.suno.ai/*"
+  ],
+  "background": {
+    "scripts": ["src/background.js"],
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Suno Library FF",
+    "default_popup": "src/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://suno.com/*",
+        "https://www.suno.com/*"
+      ],
+      "js": ["src/content-bridge.js"],
+      "run_at": "document_start",
+      "world": "ISOLATED"
+    },
+    {
+      "matches": [
+        "https://suno.com/*",
+        "https://www.suno.com/*"
+      ],
+      "js": ["src/content-hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    }
+  ]
+}
