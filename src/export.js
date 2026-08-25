@@ -10,6 +10,8 @@
  * later importer can stay stable while clip.raw drifts.
  */
 
+import { edgesFromClip } from "./lineage.js";
+
 export const SIDECAR_SCHEMA = "suno-library-ff.sidecar.v1";
 export const CATALOG_SCHEMA = "suno-library-ff.catalog.v1";
 
@@ -57,7 +59,10 @@ export function buildSidecar(clip, curation, options = {}) {
       tags: clip.tags,
       duration: clip.duration,
       parent_id: clip.parent_id,
+      parent_kind: clip.parent_kind || null,
+      extra_parents: clip.extra_parents || [],
     },
+    edges: edgesFromClip(clip),
     curation: curation || null,
     files: {
       audio: clip.audio_url

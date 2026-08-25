@@ -17,6 +17,7 @@ async function refresh() {
   const status = await send({ type: "GET_STATUS" });
   $("auth").textContent = status.auth ? "bearer present" : "missing — open suno.com";
   $("clips").textContent = String(status.clipCount ?? 0);
+  $("edges").textContent = String(status.edgeCount ?? 0);
   $("sync").textContent = status.syncStatus || (status.running ? "running" : "idle");
   $("last").textContent = fmtTime(status.lastSyncAt);
 
@@ -47,7 +48,15 @@ async function refresh() {
     const title = document.createElement("strong");
     title.textContent = clip.title || clip.id;
     const meta = document.createElement("span");
-    meta.textContent = [clip.model_name, clip.created_at].filter(Boolean).join(" · ");
+    const parent =
+      clip.parent_id && clip.parent_kind
+        ? `${clip.parent_kind} ← ${String(clip.parent_id).slice(0, 8)}`
+        : clip.parent_id
+          ? `parent ${String(clip.parent_id).slice(0, 8)}`
+          : null;
+    meta.textContent = [clip.model_name, parent, clip.created_at]
+      .filter(Boolean)
+      .join(" · ");
     li.append(title, meta);
     list.append(li);
   }

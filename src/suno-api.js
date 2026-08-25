@@ -5,6 +5,8 @@
  * Auth is injected; this file never stores tokens.
  */
 
+import { lineageFromRaw } from "./lineage.js";
+
 export const API_HOSTS = [
   "https://studio-api.prod.suno.com",
   "https://studio-api-prod.suno.com",
@@ -85,6 +87,7 @@ export function normalizeClip(raw) {
   if (!id) return null;
 
   const metadata = raw.metadata && typeof raw.metadata === "object" ? raw.metadata : {};
+  const lineage = lineageFromRaw(raw);
 
   return {
     id: String(id),
@@ -100,11 +103,9 @@ export function normalizeClip(raw) {
     prompt: metadata.prompt || raw.prompt || raw.lyric || "",
     tags: metadata.tags || raw.tags || "",
     duration: metadata.duration ?? raw.duration ?? null,
-    parent_id:
-      metadata.continue_clip_id ||
-      raw.continue_clip_id ||
-      metadata.original_clip_id ||
-      null,
+    parent_id: lineage.parent_id,
+    parent_kind: lineage.kind,
+    extra_parents: lineage.extra_parents,
     indexed_at: new Date().toISOString(),
     raw,
   };

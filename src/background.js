@@ -9,14 +9,17 @@ import { AuthError, RateLimitError, fetchFeedPage, sleep } from "./suno-api.js";
 import {
   putClips,
   countClips,
+  countEdges,
   getSyncState,
   setSyncState,
   listClips,
   getCuration,
   getAllClips,
   getClip,
+  rebuildLineage,
 } from "./idb.js";
 import { batchDir, exportClip, downloadJson, CATALOG_SCHEMA } from "./export.js";
+import { edgesFromClip } from "./lineage.js";
 import {
   EXPORT_ALARM,
   SYNC_ALARM,
@@ -93,6 +96,7 @@ async function getStatus() {
     auth: hasAuth(),
     bearerAgeMs: bearerAgeMs(),
     clipCount: await countClips(),
+    edgeCount: await countEdges(),
     running: sync.running || jobSync?.status === "running" || jobSync?.status === "waiting_auth",
     syncStatus: jobSync?.status || (sync.running ? "running" : "idle"),
     lastError: sync.lastError || jobSync?.lastError || null,
@@ -272,6 +276,13 @@ async function runSync(auth, speed) {
   }
 
   const completed = !sync.cancel;
+  if (completed) {
+    try {
+      await rebuildLineage();
+    } catch (err) {
+      sync.lastError = `lineage rebuild: ${String(err?.message || err)}`;
+    }
+  }
   await setSyncState("library", {
     next_cursor: cursor,
     page,
@@ -282,7 +293,7 @@ async function runSync(auth, speed) {
   await writeSyncJob({
     status: completed ? "completed" : "cancelled",
     speed,
-    lastError: null,
+    lastError: sync.lastError,
   });
   if (completed || sync.cancel) await disarmWatchdog(SYNC_ALARM);
 }
@@ -425,12 +436,20 @@ async function runExport(job) {
     await sleep(delay);
   }
 
+  const edges = [];
+  for (const entry of entries) {
+    if (!entry?.id || entry.error) continue;
+    const clip = await getClip(entry.id);
+    if (clip) edges.push(...edgesFromClip(clip));
+  }
+
   await downloadJson(
     {
       schema: CATALOG_SCHEMA,
       exported_at: new Date().toISOString(),
       dir: job.dir,
       entries,
+      edges,
     },
     `${job.dir}/catalog.json`
   );
