@@ -1,4 +1,4 @@
-# Suno Library FF — v0.4.0
+# Suno Library FF — v0.5.0
 
 Firefox MV3 WebExtension that indexes **your** Suno library into IndexedDB.
 
@@ -21,7 +21,9 @@ Implemented:
 - In-memory Bearer + cookie fallback
 - `POST /api/feed/v3` page walker with rate-limit backoff
 - IndexedDB schema v1 (`clips`, `curation`, `edges`, `playlists`, `sync_state`)
-- Popup: auth status, start/stop sync, recent clips
+- Lineage: `cover_clip_id` / `cover_audio_id` / `continue_clip_id` / mashup ids → `edges` on insert
+- Rebuild of cover edges from stored `raw` at the end of a completed sync
+- Popup: auth status, start/stop sync, clip + edge counts, recent clips
 - Sidecar export via `browser.downloads` (`<stem>.json` + audio, optional art)
 - Durable export cursor in IDB + `alarms` watchdog (event-page resume)
 - Durable sync job + `waiting_auth` resume when a Bearer is recaptured
@@ -31,8 +33,9 @@ Not implemented (intentionally):
 - File System Access offline folder scan
 - Widgets on suno.com
 - Cloud sync
-- Search / lineage UI
+- Search / lineage UI (edges are stored; no graph view)
 - Stem / WAV download
+- Generation / cover POST
 
 ## Install (temporary)
 
@@ -43,6 +46,8 @@ Not implemented (intentionally):
 5. Click the toolbar icon → Index library
 
 Minimum Firefox: 128 (MAIN-world content scripts).
+
+Existing v0.4 indexes: run Index library once. Sync re-reads `raw` and writes missing cover edges.
 
 ## Design constraints
 
@@ -55,6 +60,23 @@ Minimum Firefox: 128 (MAIN-world content scripts).
 | No generation endpoints | Different risk class than library read |
 | Downloads folder + sidecar | Firefox has no durable directory handle |
 | Sidecar without `raw` by default | `raw` is large and unstable |
+| Immediate parent, not original-root | Cover chain is a linked list |
+
+## Lineage
+
+`normalizeClip` picks an immediate parent:
+
+| Priority | Source keys | `parent_kind` |
+|---|---|---|
+| Mashup | `mashup_clip_ids`, `additional_audio_id` | `mashup` (extra parents on the clip) |
+| Infill | `task: infill` + `continue_clip_id` | `infill` |
+| Extend | `task: extend` + `continue_clip_id` | `extend` |
+| Cover | `cover_clip_id`, `cover_audio_id`, `is_remix` | `cover` |
+| Fallback | `continue_clip_id` then `original_clip_id` | `extend` / `original` |
+
+Self-loops are dropped. Edges are identity-keyed `{kind}:{parent}->{child}` so duplicate insert is a no-op.
+
+Sidecar `clip.parent_id` / `parent_kind` plus `edges[]`. Catalog batches include the same edge list.
 
 ## Export layout
 
@@ -74,16 +96,23 @@ Catalog schema: `suno-library-ff.catalog.v1`
 
 Entire-index export will open one download per file. Use Slow on large libraries.
 
+## Tests
+
+```bash
+npm test
+```
+
 ## Next increments
 
 1. Confirm live `feed/v3` request body against a captured HAR.
-2. Derive lineage edges from `parent_id` on insert.
-3. Add FTS (SQLite WASM) once clip volume exceeds IDB scan comfort.
-4. Lineage edges on insert; confirm `feed/v3` body against a live HAR.
+2. Add FTS (SQLite WASM) once clip volume exceeds IDB scan comfort.
+3. Lineage UI (walk `edges` in the popup).
 
 ## Schema
 
-`clips.id` is the Suno clip UUID.
+`clips.id` is the Suno clip UUID. `clips.parent_id` / `parent_kind` are the immediate remix parent.
+
+`edges` holds `{ id, parent_id, child_id, kind }` with indexes on parent, child, and kind.
 
 `sync_state.library` holds `{ next_cursor, page, accumulated, completed }`.
 `sync_state.sync_job` holds `{ status, speed, lastError }`.

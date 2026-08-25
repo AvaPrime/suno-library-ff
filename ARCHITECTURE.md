@@ -29,6 +29,8 @@ suno.com session
 
 Canonical clip identity here is the Suno UUID. That is a *provider* id. A later MUSE import should mint a sovereign id and keep the Suno UUID as provenance, not as the primary key.
 
+Cover / extend / mashup lineage is derived on insert (`src/lineage.js`) and stored in `edges`. Generation is still out of scope: this adapter records the family tree after Suno has already made the clip.
+
 ## Event-page invariants
 
 Firefox MV3 backgrounds are non-persistent (`background.scripts`, not `service_worker`).

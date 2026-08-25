@@ -1,0 +1,10 @@
+{
+  "name": "suno-library-ff",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "description": "Firefox MV3 adapter: local index of your Suno library. Read path only.",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  }
+}
